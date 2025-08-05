@@ -1,0 +1,48 @@
+From cebb6980e91344c0db627523d0dd5d4c7c5b3793 Mon Sep 17 00:00:00 2001
+From: KAMASUKI <KAMASUKI@users.noreply.github.com>
+Date: Tue, 5 Aug 2025 18:38:37 +0200
+Subject: [PATCH] Man kann durch alle Monster durchlaufen
+
+---
+ clientsource/Client/UserInterface/InstanceBaseBattle.cpp | 8 ++++++++
+ clientsource/Client/UserInterface/Locale_inc.h           | 1 +
+ 2 files changed, 9 insertions(+)
+
+diff --git a/clientsource/Client/UserInterface/InstanceBaseBattle.cpp b/clientsource/Client/UserInterface/InstanceBaseBattle.cpp
+index 8f8c29de7..b228e1c1b 100644
+--- a/clientsource/Client/UserInterface/InstanceBaseBattle.cpp
++++ b/clientsource/Client/UserInterface/InstanceBaseBattle.cpp
+@@ -490,6 +490,9 @@ BOOL CInstanceBase::CheckAdvancing()
+ 	}
+ 
+ 	BOOL bUsingSkill = m_GraphicThingInstance.IsUsingSkill();
++#ifdef ENABLE_IGNORE_MONSTER_COLLISION
++	BOOL bAttacking = m_GraphicThingInstance.isAttacking();
++#endif
+ 
+ 	m_dwAdvActorVID = 0;
+ 	UINT uCollisionCount=0;
+@@ -507,6 +510,11 @@ BOOL CInstanceBase::CheckAdvancing()
+ 		if( bUsingSkill && !rkActorEach.IsDoor() )
+ 			continue;
+ 
++#ifdef ENABLE_IGNORE_MONSTER_COLLISION
++		if (!bAttacking && rkActorEach.IsEnemy() )
++			continue;
++#endif
++
+ 		if (rkActorSelf.TestActorCollision(rkActorEach))
+ 		{
+ 			uCollisionCount++;
+diff --git a/clientsource/Client/UserInterface/Locale_inc.h b/clientsource/Client/UserInterface/Locale_inc.h
+index 9fa603172..a9909d146 100644
+--- a/clientsource/Client/UserInterface/Locale_inc.h
++++ b/clientsource/Client/UserInterface/Locale_inc.h
+@@ -129,6 +129,7 @@
+ #define ENABLE_COLORED_DROPS
+ #define ENABLE_BETTER_RENDERING_OPTIMIZATION
+ #define ENABLE_BETTER_RENDERING_WHILE_CLIENT_IS_MINIMIZED
++#define ENABLE_IGNORE_MONSTER_COLLISION
+ #define ENABLE_DEWS_PLUS
+ #define ENABLE_AFFECT_ITEMS_PLUS
+ #define ENABLE_NEW_TYPE_OF_POTION
