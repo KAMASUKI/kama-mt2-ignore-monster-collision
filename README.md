@@ -1,0 +1,1 @@
+# kama-mt2-ignore-monster-collision
